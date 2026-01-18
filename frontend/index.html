@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Process Scheduler - OS Project</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🖥️ CPU Process Scheduling Simulator</h1>
+            <p class="subtitle">Operating Systems Project - Scheduling Algorithms Comparison</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Input Section -->
+            <section class="input-section">
+                <h2>Process Configuration</h2>
+                
+                <div class="control-group">
+                    <label for="numProcesses">Number of Processes:</label>
+                    <input type="number" id="numProcesses" min="1" max="10" value="3">
+                    <button onclick="generateProcessInputs()" class="btn-secondary">Generate Fields</button>
+                </div>
+
+                <div id="processInputs" class="process-inputs">
+                    <!-- Process input fields will be generated here -->
+                </div>
+
+                <div class="algorithm-info">
+                    <h3>Available Algorithms:</h3>
+                    <ul>
+                        <li><strong>FCFS:</strong> First Come First Serve - Processes executed in arrival order</li>
+                        <li><strong>SJF:</strong> Shortest Job First - Shortest burst time executes first</li>
+                        <li><strong>Round Robin:</strong> Time quantum = 4 units, processes rotate</li>
+                        <li><strong>Priority:</strong> Lower priority number = Higher priority</li>
+                    </ul>
+                </div>
+
+                <button onclick="runScheduler()" class="btn-primary" id="runBtn">
+                    ▶️ Run All Algorithms
+                </button>
+            </section>
+
+            <!-- Output Section -->
+            <section class="output-section">
+                <h2>Results</h2>
+                
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Running scheduler algorithms...</p>
+                </div>
+
+                <div id="error" class="error" style="display: none;"></div>
+
+                <!-- Gantt Charts Section -->
+                <div id="ganttSection" class="gantt-section" style="display: none;">
+                    <h3>📊 Gantt Chart Visualization</h3>
+                    
+                    <!-- FCFS Gantt Chart -->
+                    <div class="gantt-container">
+                        <h4 class="gantt-title">FCFS (First Come First Serve)</h4>
+                        <div id="gantt-fcfs" class="gantt-chart"></div>
+                    </div>
+
+                    <!-- SJF Gantt Chart -->
+                    <div class="gantt-container">
+                        <h4 class="gantt-title">SJF (Shortest Job First)</h4>
+                        <div id="gantt-sjf" class="gantt-chart"></div>
+                    </div>
+
+                    <!-- Round Robin Gantt Chart -->
+                    <div class="gantt-container">
+                        <h4 class="gantt-title">Round Robin (Time Quantum = 4)</h4>
+                        <div id="gantt-rr" class="gantt-chart"></div>
+                    </div>
+
+                    <!-- Priority Gantt Chart -->
+                    <div class="gantt-container">
+                        <h4 class="gantt-title">Priority Scheduling</h4>
+                        <div id="gantt-priority" class="gantt-chart"></div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div id="statistics" class="statistics" style="display: none;">
+                    <h3>Performance Comparison</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h4>FCFS (First Come First Serve)</h4>
+                            <div class="stat-item">
+                                <span>Avg Waiting Time:</span>
+                                <span id="fcfs-wait" class="stat-value">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Avg Turnaround:</span>
+                                <span id="fcfs-turn" class="stat-value">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Throughput:</span>
+                                <span id="fcfs-throughput" class="stat-value">-</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h4>SJF (Shortest Job First)</h4>
+                            <div class="stat-item">
+                                <span>Avg Waiting Time:</span>
+                                <span id="sjf-wait" class="stat-value">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Avg Turnaround:</span>
+                                <span id="sjf-turn" class="stat-value">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Throughput:</span>
+                                <span id="sjf-throughput" class="stat-value">-</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h4>Round Robin (TQ=4)</h4>
+                            <div class="stat-item">
+                                <span>Avg Waiting Time:</span>
+                                <span id="rr-wait" class="stat-value">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Avg Turnaround:</span>
+                                <span id="rr-turn" class="stat-value">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Throughput:</span>
+                                <span id="rr-throughput" class="stat-value">-</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h4>Priority Scheduling</h4>
+                            <div class="stat-item">
+                                <span>Avg Waiting Time:</span>
+                                <span id="priority-wait" class="stat-value">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Avg Turnaround:</span>
+                                <span id="priority-turn" class="stat-value">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Throughput:</span>
+                                <span id="priority-throughput" class="stat-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recommendation" id="recommendation" style="display: none;">
+                        <h4>📊 System Recommendation:</h4>
+                        <p id="recommendation-text"></p>
+                    </div>
+                </div>
+
+                <!-- Raw Output -->
+                <div id="rawOutput" class="raw-output" style="display: none;">
+                    <h3>Complete Program Output</h3>
+                    <button onclick="toggleRawOutput()" class="btn-secondary">Toggle Details</button>
+                    <pre id="outputText"></pre>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>Operating Systems Project | CPU Scheduling Algorithms</p>
+            <p class="tech-stack">Tech Stack: C (Backend Algorithms) + Python Flask (API) + HTML/CSS/JS (Frontend)</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
